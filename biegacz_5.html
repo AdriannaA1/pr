@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biegacz - Śledź swoje treningi</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd; /* Dodaj ramkę */
+            margin: 0 auto; /* Wyśrodkuj kontener */
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        input[type="date"] {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: calc(100% - 16px);
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        input[type="date"]:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #555;
+            font-size: 16px;
+        }
+
+        span {
+            font-weight: bold;
+            color: #007bff;
+            font-size: 18px;
+        }
+
+        .warning {
+            color: #dc3545;
+            font-style: italic;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+
+        /* Stylizacja przycisku "Cofnij trening" */
+        button:nth-of-type(2) {
+            margin-left: 10px;
+        }
+
+        /* Stylizacja ramki dla kontenera input[type="date"] */
+        input[type="date"] {
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 8px;
+            width: calc(100% - 16px);
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        /* Dodanie marginesu na dole ostatniej sekcji */
+        .section:last-child {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+<h1>Biegacz - Śledź swoje treningi</h1>
+<div class="container">
+    <div class="section">
+        <h2>Liczba treningów w tym tygodniu: <span id="treningi">0</span></h2>
+        <button onclick="dodajTrening()">Dodaj trening</button>
+        <button onclick="cofnijTrening()">Cofnij trening</button>
+    </div>
+    <div class="section">
+        <h2>Twój nadchodzący bieg: <span id="czasDoBiegu">0 dni, 0 godzin, 0 minut, 0 sekund</span></h2>
+        <label for="dataBiegu">Wybierz datę swojego biegu:</label>
+        <input type="date" id="dataBiegu">
+        <button onclick="ustawDateBiegu()">Ustaw datę biegu</button>
+    </div>
+</div>
+
+<script>
+    let liczbaTreningow = 0;
+    let dataBiegu = null;
+    const maksymalnaLiczbaTreningow = 7;
+
+    function dodajTrening() {
+        if (liczbaTreningow < maksymalnaLiczbaTreningow) {
+            liczbaTreningow++;
+            document.getElementById('treningi').textContent = liczbaTreningow;
+        } else {
+            alert("Osiągnięto maksymalną liczbę treningów na ten tydzień!");
+        }
+    }
+
+    function cofnijTrening() {
+        if (liczbaTreningow > 0) {
+            liczbaTreningow--;
+            document.getElementById('treningi').textContent = liczbaTreningow;
+        }
+    }
+
+    function ustawDateBiegu() {
+        dataBiegu = new Date(document.getElementById('dataBiegu').value);
+        odliczCzasDoBiegu();
+    }
+
+    function odliczCzasDoBiegu() {
+        if (dataBiegu === null) {
+            //alert("Proszę najpierw ustawić datę biegu!");
+            return;
+        }
+
+        const teraz = new Date();
+        const roznica = Math.abs(dataBiegu - teraz) / 1000;
+
+        const dni = Math.floor(roznica / 86400);
+        const godziny = Math.floor((roznica % 86400) / 3600);
+        const minuty = Math.floor(((roznica % 86400) % 3600) / 60);
+        const sekundy = Math.floor(((roznica % 86400) % 3600) % 60);
+
+        document.getElementById('czasDoBiegu').textContent = dni + " dni, " + godziny + " godzin, " + minuty + " minut, " + sekundy + " sekund";
+    }
+
+    setInterval(odliczCzasDoBiegu, 1000); // Odliczaj co sekundę
+</script>
+</body>
+</html>
